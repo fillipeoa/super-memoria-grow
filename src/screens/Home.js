@@ -41,7 +41,7 @@ const Home = ({ navigation }) => {
 
           <TouchableOpacity
             style={styles.secondary_button}
-            onPress={() => navigation.navigate('História')}
+            onPress={() => navigation.navigate('Palavras')}
           >
               <Text
                 style={styles.texto_secondary_button}

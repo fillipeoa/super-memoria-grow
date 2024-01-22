@@ -4,6 +4,7 @@ import { useFonts, Montserrat_400Regular, Montserrat_700Bold } from '@expo-googl
 import { Icon } from 'react-native-elements'
 import * as Speech from 'expo-speech';
 import { CHAT_GPT_API_KEY } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Story = ({ navigation }) => {
 
@@ -20,11 +21,23 @@ const Story = ({ navigation }) => {
         const generateText = async () => {
             try {
                 let target_child_age = 2;
-                const prompt = `
-                    Crie uma história para uma criança de ${target_child_age} anos
-                    com os Seguintes elemetos: banana, macaco, pizza, boneca, chapéu.
-                    Cada parágrafo tem que ter no máximo 10 palavras.
-                `;
+                
+                let stored_words = await AsyncStorage.getItem('wordItems');
+                stored_words = JSON.parse(stored_words);
+
+                if(stored_words.length == 0){
+                    setPhrase('Adicione pelo menos uma palavra para começar.')
+                    return;
+                }
+
+                let randomly_selected_words = stored_words.sort(() => Math.random() - 0.5).slice(0, 5);
+
+                let prompt = `Crie uma história para uma criança de ${target_child_age} anos com os seguintes elemetos: `;
+                for(let word of randomly_selected_words){
+                    prompt += `${word}, `;
+                }
+                prompt = prompt.slice(0, -2);
+                prompt += `. Cada parágrafo tem que ter no máximo 10 palavras.`;
         
                 const response = await fetch("https://api.openai.com/v1/engines/gpt-3.5-turbo-instruct/completions", {
                     method: 'POST',
@@ -43,7 +56,7 @@ const Story = ({ navigation }) => {
                 });
         
                 const data = await response.json();
-                let text = data.choices[0].text.slice(3).split('\n');
+                let text = data.choices[0].text.slice(2).split('\n');
                 
                 setText(text);
                 setIndex(0);
