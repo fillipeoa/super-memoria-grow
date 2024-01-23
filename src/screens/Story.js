@@ -25,7 +25,7 @@ const Story = ({ navigation }) => {
                 let stored_words = await AsyncStorage.getItem('wordItems');
                 stored_words = JSON.parse(stored_words);
 
-                if(stored_words.length == 0){
+                if(!stored_words || stored_words.length == 0){
                     setPhrase('Adicione pelo menos uma palavra para começar.')
                     return;
                 }
@@ -37,7 +37,7 @@ const Story = ({ navigation }) => {
                     prompt += `${word}, `;
                 }
                 prompt = prompt.slice(0, -2);
-                prompt += `. Cada parágrafo tem que ter no máximo 10 palavras.`;
+                prompt += `. Em hipótese alguma o parágrafo pode ter mais de 10 palavras.`;
         
                 const response = await fetch("https://api.openai.com/v1/engines/gpt-3.5-turbo-instruct/completions", {
                     method: 'POST',

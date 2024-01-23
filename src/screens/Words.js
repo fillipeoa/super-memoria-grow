@@ -138,7 +138,11 @@ const styles = StyleSheet.create({
   },
 
   addButtonDisabled: {
-    ...addButton,
+    backgroundColor: '#e1be34',
+    padding: 10,
+    alignItems: 'center',
+    borderRadius: 10,
+    marginBottom: 40,
     opacity: 0.5
   },
 
